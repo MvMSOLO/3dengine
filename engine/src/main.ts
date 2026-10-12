@@ -101,7 +101,6 @@ worldRoot.add(proceduralRoot);
 
 let importedRoot: THREE.Object3D | null = null;
 let importedMixer: THREE.AnimationMixer | null = null;
-let activeAnimations: THREE.AnimationAction[] = [];
 
 function standardMaterial(
   color: string,
@@ -463,11 +462,10 @@ async function importGlb(file: File): Promise<void> {
 
             if (importedMixer) importedMixer.stopAllAction();
             importedMixer = gltf.animations.length > 0 ? new THREE.AnimationMixer(importedRoot) : null;
-            activeAnimations = gltf.animations.map((clip) => {
+            for (const clip of gltf.animations) {
               const action = importedMixer?.clipAction(clip);
               if (action) action.play();
-              return action;
-            }).filter((action): action is THREE.AnimationAction => Boolean(action));
+            }
 
             assetLabel.textContent = file.name.toUpperCase().slice(0, 23);
             pipelineStatus.textContent = gltf.animations.length > 0
