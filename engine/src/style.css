@@ -65,6 +65,13 @@ h1 em { font-style: normal; color: var(--cyan); text-shadow: 0 0 35px rgba(68,22
 .switch.is-on::after { transform: translateX(10px); background: var(--cyan); box-shadow: 0 0 9px rgba(68,229,255,.6); }
 .panel-foot { height: 38px; padding: 0 15px; display: flex; align-items: center; gap: 8px; color: #8ba2af; font: 8px var(--mono); letter-spacing: .1em; }
 .panel-foot .panel-index { margin-left: auto; }
+.animation-picker { padding: 12px 15px 14px; border-bottom: 1px solid rgba(124,195,221,.1); background: rgba(0, 167, 206, .045); }
+.animation-picker[hidden] { display: none !important; }
+.animation-picker label { display: flex; justify-content: space-between; margin-bottom: 8px; color: #8da5b2; font: 8px var(--mono); letter-spacing: .14em; }
+.animation-picker label span { color: var(--cyan); }
+.animation-picker select { width: 100%; min-width: 0; padding: 9px 10px; color: #dcedf4; background: rgba(4, 10, 17, .92); border: 1px solid rgba(68,229,255,.27); border-radius: 0; font: 10px var(--mono); outline: none; }
+.animation-picker select:focus { border-color: rgba(68,229,255,.75); box-shadow: 0 0 0 1px rgba(68,229,255,.16); }
+.animation-picker select option { background: #07111a; color: #dcedf4; }
 .status-square { width: 5px; height: 5px; background: #71f5bb; box-shadow: 0 0 8px rgba(113,245,187,.6); }
 .bottom-bar { bottom: 0; left: 0; right: 0; min-height: 68px; display: flex; align-items: center; justify-content: space-between; padding: 13px 35px; background: linear-gradient(0deg, rgba(4,7,13,.94), rgba(4,7,13,.16)); border-top: 1px solid rgba(124,195,221,.12); font-size: 9px; color: #7e95a4; }
 .bottom-left, .bottom-right { display: flex; align-items: center; gap: 9px; }
@@ -125,6 +132,9 @@ h1 em { font-style: normal; color: var(--cyan); text-shadow: 0 0 35px rgba(68,22
   .control-row strong { font-size: 9px; }
   .control-row small { font-size: 8px; }
   .panel-foot { height: 30px; padding: 0 10px; font-size: 7px; }
+  .animation-picker { padding: 8px 10px 10px; }
+  .animation-picker label { font-size: 7px; margin-bottom: 6px; }
+  .animation-picker select { padding: 8px; font-size: 9px; }
   .bottom-bar { padding: 9px 12px; min-height: 52px; }
   .bottom-left { max-width: 118px; font-size: 7px; }
   .timeline { width: min(155px, 43vw); }
