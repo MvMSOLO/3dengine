@@ -415,13 +415,23 @@ function playCinematic(): void {
 }
 
 function fitModelToStage(model: THREE.Object3D): void {
+  // Blender exports may include viewport staging guides and large matte floors.
+  // These are useful in Blender but would corrupt browser framing and scene composition.
+  const stagingNodes: THREE.Object3D[] = [];
+  model.traverse((child) => {
+    if (child.name.trim().toUpperCase().startsWith("STAGE |")) {
+      stagingNodes.push(child);
+    }
+  });
+  for (const node of stagingNodes) node.parent?.remove(node);
+
   model.updateMatrixWorld(true);
   const initialBox = new THREE.Box3().setFromObject(model);
   const size = initialBox.getSize(new THREE.Vector3());
   const maxDimension = Math.max(size.x, size.y, size.z);
 
   if (!Number.isFinite(maxDimension) || maxDimension <= 0) {
-    throw new Error("The selected GLB does not contain visible 3D geometry.");
+    throw new Error("The selected GLB does not contain visible 3D geometry after staging helpers were removed.");
   }
 
   const scale = 4.2 / maxDimension;
@@ -434,6 +444,15 @@ function fitModelToStage(model: THREE.Object3D): void {
   model.position.z -= center.z;
   model.position.y -= scaledBox.min.y;
   model.updateMatrixWorld(true);
+}
+
+function disposeImportedAsset(root: THREE.Object3D): void {
+  root.traverse((child) => {
+    if (!(child instanceof THREE.Mesh)) return;
+    child.geometry.dispose();
+    const materials = Array.isArray(child.material) ? child.material : [child.material];
+    for (const material of materials) material.dispose();
+  });
 }
 
 async function importGlb(file: File): Promise<void> {
@@ -454,7 +473,10 @@ async function importGlb(file: File): Promise<void> {
         (gltf) => {
           try {
             fitModelToStage(gltf.scene);
-            if (importedRoot) worldRoot.remove(importedRoot);
+            if (importedRoot) {
+              worldRoot.remove(importedRoot);
+              disposeImportedAsset(importedRoot);
+            }
             importedRoot = gltf.scene;
             importedRoot.name = `Imported / ${file.name}`;
             worldRoot.add(importedRoot);
@@ -473,7 +495,9 @@ async function importGlb(file: File): Promise<void> {
               : "GLB LOADED";
             setStatus("ASSET IMPORTED");
             resetCamera();
-            announce(`Loaded ${file.name} successfully.`);
+            announce(
+              `Loaded ${file.name}: ${gltf.scene.children.length} top-level objects, ${gltf.animations.length} animation clips.`
+            );
             resolve();
           } catch (error) {
             reject(error);
