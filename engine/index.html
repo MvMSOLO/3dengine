@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#05070b" />
+    <meta name="description" content="MVM 3D Engine — cinematic browser cutscene runtime." />
+    <title>MVM 3D Engine — Cinematic Runtime</title>
+  </head>
+  <body>
+    <div id="app">
+      <canvas id="scene-canvas" aria-label="Interactive 3D scene"></canvas>
+      <div class="vignette" aria-hidden="true"></div>
+
+      <header class="topbar hud">
+        <a class="brand" href="./" aria-label="MVM 3D Engine home">
+          <span class="brand-mark">M</span>
+          <span class="brand-copy"><strong>MVM</strong><small>3D ENGINE / PREVIEW</small></span>
+        </a>
+        <div class="top-center"><span class="live-dot"></span><span id="status-text">INITIALIZING SCENE</span></div>
+        <div class="top-actions">
+          <button class="icon-button" id="sound-toggle" title="Toggle ambient sound" aria-label="Toggle ambient sound">♫ <span id="sound-label">SOUND OFF</span></button>
+          <button class="icon-button" id="hud-toggle" title="Toggle interface" aria-label="Toggle interface">⌗ <span>HUD</span></button>
+        </div>
+      </header>
+
+      <aside class="left-panel hud">
+        <div class="eyebrow">SCENE / 001</div>
+        <h1>MVM<br /><em>CORE</em></h1>
+        <p class="lede">A procedural reactor artifact for the next-generation cutscene pipeline.</p>
+        <div class="divider"></div>
+        <div class="data-row"><span>RENDERER</span><strong>THREE.JS / WEBGL</strong></div>
+        <div class="data-row"><span>ASSET</span><strong id="asset-label">PROCEDURAL PREVIEW</strong></div>
+        <div class="data-row"><span>PIPELINE</span><strong id="pipeline-status">READY FOR GLB</strong></div>
+        <div class="data-row"><span>FRAME RATE</span><strong id="fps-label">-- FPS</strong></div>
+        <div class="hint"><span class="hint-key">DRAG</span> ORBIT <span class="hint-key">SCROLL</span> ZOOM</div>
+      </aside>
+
+      <aside class="right-panel hud">
+        <div class="panel-heading"><span>SCENE CONTROLS</span><span class="panel-index">01—04</span></div>
+        <button class="control-row primary" id="cinema-play"><span class="control-icon">▷</span><span><strong>Play cinematic</strong><small>Automated camera pass</small></span><span class="arrow">↗</span></button>
+        <button class="control-row" id="load-asset"><span class="control-icon">＋</span><span><strong>Load Blender asset</strong><small>Import a .glb file</small></span><span class="arrow">↗</span></button>
+        <input id="asset-input" type="file" accept=".glb,.gltf,model/gltf-binary,model/gltf+json" hidden />
+        <button class="control-row" id="auto-rotate"><span class="control-icon">⟳</span><span><strong>Auto rotation</strong><small id="rotation-label">Disabled</small></span><span class="switch" id="rotation-switch"></span></button>
+        <button class="control-row" id="bloom-toggle"><span class="control-icon">✧</span><span><strong>Bloom effects</strong><small id="bloom-label">Enabled</small></span><span class="switch is-on" id="bloom-switch"></span></button>
+        <button class="control-row" id="camera-reset"><span class="control-icon">⌖</span><span><strong>Reset camera</strong><small>Restore default framing</small></span><span class="arrow">↺</span></button>
+        <div class="panel-foot"><span class="status-square"></span>LOCAL RUNTIME <span class="panel-index">V0.1.0</span></div>
+      </aside>
+
+      <footer class="bottom-bar hud">
+        <div class="bottom-left"><span class="corner-mark">╲</span><span>DESIGNED FOR CINEMATIC WORLDS</span></div>
+        <div class="timeline">
+          <div class="timeline-meta"><span id="timeline-label">SCENE STANDBY</span><span id="timeline-time">00:00 / 00:08</span></div>
+          <div class="timeline-track"><div id="timeline-progress"></div></div>
+        </div>
+        <div class="bottom-right"><span>WEB 3D</span><span class="version-dot"></span><span>EXPERIMENTAL</span></div>
+      </footer>
+
+      <div class="toast" id="toast" role="status" aria-live="polite"></div>
+      <div class="loading-screen" id="loading-screen">
+        <div class="loader-core"><span></span><span></span><span></span></div>
+        <div class="loading-title">MVM<span> / 3D ENGINE</span></div>
+        <div class="loading-subtitle" id="loading-label">INITIALIZING RENDER PIPELINE</div>
+        <div class="loading-track"><div></div></div>
+      </div>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
