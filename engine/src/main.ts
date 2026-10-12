@@ -101,6 +101,10 @@ worldRoot.add(proceduralRoot);
 
 let importedRoot: THREE.Object3D | null = null;
 let importedMixer: THREE.AnimationMixer | null = null;
+let importedClips: THREE.AnimationClip[] = [];
+let activeAction: THREE.AnimationAction | null = null;
+const animationPickerWrap = byId<HTMLDivElement>("animation-picker-wrap");
+const animationSelect = byId<HTMLSelectElement>("animation-select");
 
 function standardMaterial(
   color: string,
@@ -483,10 +487,23 @@ async function importGlb(file: File): Promise<void> {
             proceduralRoot.visible = false;
 
             if (importedMixer) importedMixer.stopAllAction();
-            importedMixer = gltf.animations.length > 0 ? new THREE.AnimationMixer(importedRoot) : null;
-            for (const clip of gltf.animations) {
-              const action = importedMixer?.clipAction(clip);
-              if (action) action.play();
+            importedClips = gltf.animations;
+            importedMixer = importedClips.length > 0 ? new THREE.AnimationMixer(importedRoot) : null;
+            activeAction = null;
+            animationSelect.replaceChildren();
+
+            if (importedMixer && importedClips.length > 0) {
+              importedClips.forEach((clip, index) => {
+                const option = document.createElement("option");
+                option.value = String(index);
+                option.textContent = clip.name || `Animation ${index + 1}`;
+                animationSelect.append(option);
+              });
+              animationPickerWrap.hidden = false;
+              activeAction = importedMixer.clipAction(importedClips[0]);
+              activeAction.reset().play();
+            } else {
+              animationPickerWrap.hidden = true;
             }
 
             assetLabel.textContent = file.name.toUpperCase().slice(0, 23);
@@ -575,6 +592,18 @@ byId<HTMLInputElement>("asset-input").addEventListener("change", (event) => {
   if (file) void importGlb(file);
 });
 byId("camera-reset").addEventListener("click", resetCamera);
+animationSelect.addEventListener("change", () => {
+  if (!importedMixer) return;
+  const clipIndex = Number(animationSelect.value);
+  const clip = importedClips[clipIndex];
+  if (!clip) return;
+
+  const nextAction = importedMixer.clipAction(clip);
+  if (activeAction && activeAction !== nextAction) activeAction.fadeOut(0.18);
+  activeAction = nextAction;
+  activeAction.reset().fadeIn(0.18).play();
+  announce(`Playing animation: ${clip.name || `Animation ${clipIndex + 1}`}.`);
+});
 byId("auto-rotate").addEventListener("click", toggleAutoRotation);
 byId("bloom-toggle").addEventListener("click", toggleBloom);
 byId("hud-toggle").addEventListener("click", toggleHud);
